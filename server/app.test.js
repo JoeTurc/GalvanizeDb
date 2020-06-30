@@ -5,6 +5,17 @@ const request = supertest(app)
 
 const movies = JSON.parse(fs.readFileSync("movies.JSON"))
 
+/*jest.mock('./db/index');
+
+const {query} = require('./db/index');
+const mDb = jest.fn();
+query.mockImplementation(() => mDb)
+
+beforeEach(() => {
+  query.mockClear();
+  mDb.mockClear();
+});*/
+
 test("GET /", done => {
   supertest(app)
     .get("/")
@@ -19,6 +30,16 @@ test("GET /movies", done => {
     .expect('Content-Type', 'application/json; charset=utf-8')
     .expect(200, movies)
     .end(done)
+})
+
+test("POST /reviews", done => {
+  supertest(app)
+  .post('/reviews')
+  .send({movie_id: 1, review_text: "This is the best ever", review_title: "Glowing review", reviewer_id: 2})
+  .set('Accept', 'application/json')
+  .expect('Content-Type', /json/)
+  .expect(200)
+  done()
 })
 
 it('GETs the expected data from movies endpoint', async done => {
